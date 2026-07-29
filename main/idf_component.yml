@@ -1,0 +1,4 @@
+dependencies:
+  panellan/panellan_bsp:
+    version: "*"
+    override_path: "../components/panellan_bsp"

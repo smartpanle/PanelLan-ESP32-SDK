@@ -1,0 +1,10 @@
+version: "1.0.0"
+
+dependencies:
+  idf:
+    version: ">=5.5.0"
+
+  espressif/knob: 
+    version: "*"
+  espressif/button:
+    version: "*"

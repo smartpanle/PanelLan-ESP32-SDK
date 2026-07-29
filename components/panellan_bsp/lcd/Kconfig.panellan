@@ -1,0 +1,127 @@
+# Fragment sourced by panellan_bsp/Kconfig.projbuild under "PanelLan config".
+# Not a top-level component Kconfig — keeps options out of "Component config".
+
+menu "LCD"
+
+comment "Leave all buses off for headless (no display). Board defaults pre-enable the usual bus/IC; change freely. Enabling a Panel IC also pulls its Registry package (see panellan_bsp/idf_component.yml)."
+
+# Panel resolution
+config PANELLAN_LCD_H_RES
+    int "LCD horizontal resolution (pixels)"
+    range 1 4096
+    default 480 if ZX3D95CE01S_TR
+    default 320 if ZX3D50CE02S_USRC
+    default 480 if ZX4D30NE01S_UR
+    default 480 if ZX4D30CE08S
+    default 800 if ZX7D00CE01S
+    default 480 if ZX2D10GE01R
+    default 240 if ZX2D80CE02S
+    default 480
+    help
+        Native panel width. Board sdkconfig.defaults set this; keep in sync with touch x_max.
+
+config PANELLAN_LCD_V_RES
+    int "LCD vertical resolution (pixels)"
+    range 1 4096
+    default 480 if ZX3D95CE01S_TR
+    default 480 if ZX3D50CE02S_USRC
+    default 272 if ZX4D30NE01S_UR
+    default 272 if ZX4D30CE08S
+    default 480 if ZX7D00CE01S
+    default 480 if ZX2D10GE01R
+    default 320 if ZX2D80CE02S
+    default 480
+    help
+        Native panel height. Keep in sync with board panel timing / touch y_max.
+
+# Bus types
+config PANELLAN_LCD_ENABLE_RGB
+    bool "Enable RGB LCD bus"
+    default n
+
+config PANELLAN_LCD_ENABLE_I80
+    bool "Enable Intel 8080 LCD bus"
+    default n
+
+config PANELLAN_LCD_ENABLE_SPI_WITH_PSRAM
+    bool "Enable SPI LCD (with PSRAM draw buffers)"
+    default n
+
+config PANELLAN_LCD_ENABLE_SPI_WITHOUT_PSRAM
+    bool "Enable SPI LCD (without PSRAM / partial buffers)"
+    default n
+
+config PANELLAN_LCD_ENABLE_QSPI
+    bool "Enable QSPI LCD bus"
+    default n
+
+config PANELLAN_LCD_ENABLE_MIPI_DSI
+    bool "Enable MIPI DSI LCD bus"
+    default n
+    depends on IDF_TARGET_ESP32P4
+    help
+        Requires ESP32-P4 and MIPI DSI capable IDF.
+
+
+# Panel drivers
+menu "Panel IC drivers"
+
+config PANELLAN_LCD_PANEL_RGB_ONLY
+    bool "RGB passthrough (no IC)"
+    default n
+    depends on PANELLAN_LCD_ENABLE_RGB
+    help
+        For RGB bus boards that need no panel IC driver.
+
+config PANELLAN_LCD_PANEL_ST7789
+    bool "ST7789"
+    default n
+    depends on PANELLAN_LCD_ENABLE_I80
+    help
+        Uses IDF built-in esp_lcd_panel_st7789 (no extra Registry package).
+
+config PANELLAN_LCD_PANEL_ST7796
+    bool "ST7796"
+    default n
+    depends on PANELLAN_LCD_ENABLE_I80
+    help
+        Auto-adds espressif/esp_lcd_st7796 via Component Manager.
+
+config PANELLAN_LCD_PANEL_NV3041
+    bool "NV3041"
+    default n
+    depends on PANELLAN_LCD_ENABLE_I80
+    help
+        Auto-adds eric-c-e/esp_lcd_nv3041.
+
+config PANELLAN_LCD_PANEL_ILI9341
+    bool "ILI9341"
+    default n
+    depends on PANELLAN_LCD_ENABLE_SPI_WITH_PSRAM || PANELLAN_LCD_ENABLE_SPI_WITHOUT_PSRAM
+    help
+        Auto-adds espressif/esp_lcd_ili9341.
+
+config PANELLAN_LCD_PANEL_GC9A01
+    bool "GC9A01"
+    default n
+    depends on PANELLAN_LCD_ENABLE_SPI_WITH_PSRAM || PANELLAN_LCD_ENABLE_SPI_WITHOUT_PSRAM
+    help
+        Auto-adds espressif/esp_lcd_gc9a01.
+
+config PANELLAN_LCD_PANEL_ST77916
+    bool "ST77916 (QSPI)"
+    default n
+    depends on PANELLAN_LCD_ENABLE_QSPI
+    help
+        Auto-adds espressif/esp_lcd_st77916.
+
+config PANELLAN_LCD_PANEL_ST7701
+    bool "ST7701 (MIPI)"
+    default n
+    depends on PANELLAN_LCD_ENABLE_MIPI_DSI
+    help
+        Auto-adds espressif/esp_lcd_st7701 (ESP32-P4).
+
+endmenu
+
+endmenu

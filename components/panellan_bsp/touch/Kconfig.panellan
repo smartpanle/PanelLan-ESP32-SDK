@@ -1,0 +1,26 @@
+# Fragment sourced by panellan_bsp/Kconfig.projbuild under "PanelLan config".
+# Not a top-level component Kconfig — keeps options out of "Component config".
+
+menu "Touch"
+
+comment "Board defaults pre-enable the usual IC; change freely. Enabling an IC compiles hw_touch_init and pulls its package (see panellan_bsp/idf_component.yml). Leave all off for no-touch boards."
+
+config PANELLAN_TOUCH_FT5X06
+    bool "Touch driver: FT5x06"
+    default n
+    help
+        Auto-adds espressif/esp_lcd_touch_ft5x06. Run idf.py reconfigure after enabling.
+
+config PANELLAN_TOUCH_GT911
+    bool "Touch driver: GT911"
+    default n
+    help
+        Auto-adds espressif/esp_lcd_touch_gt911.
+
+config PANELLAN_TOUCH_CST3240
+    bool "Touch driver: CST3240"
+    default n
+    help
+        Local private driver under panellan_bsp/touch/drivers/ (not on Component Registry).
+
+endmenu

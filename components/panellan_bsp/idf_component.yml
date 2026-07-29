@@ -1,0 +1,68 @@
+version: "1.0.0"
+description: PanelLan unified BSP — board (L3) + lcd/touch (L2)
+
+dependencies:
+  idf:
+    version: ">=5.3.0"
+
+  espressif/esp_lvgl_adapter:
+    version: "^0.6.2"
+
+  espressif/knob:
+    version: "*"
+    rules:
+      - if: "$CONFIG{PANELLAN_BOARD_USE_ENCODER} == True"
+
+  espressif/button:
+    version: "*"
+    rules:
+      - if: "$CONFIG{PANELLAN_BOARD_USE_ENCODER} == True"
+
+  # I80 flush / demos need lvgl.h on include path
+  lvgl/lvgl:
+    version: ">=8,<10"
+
+  # ---- LCD panel ICs (Kconfig-gated) ----
+  espressif/esp_lcd_st7796:
+    version: "^1.3.0"
+    rules:
+      - if: "$CONFIG{PANELLAN_LCD_ENABLE_I80} == True && $CONFIG{PANELLAN_LCD_PANEL_ST7796} == True"
+
+  eric-c-e/esp_lcd_nv3041:
+    version: "^0.1.0"
+    rules:
+      - if: "$CONFIG{PANELLAN_LCD_ENABLE_I80} == True && $CONFIG{PANELLAN_LCD_PANEL_NV3041} == True"
+
+  espressif/esp_lcd_ili9341:
+    version: "^2"
+    rules:
+      - if: "($CONFIG{PANELLAN_LCD_ENABLE_SPI_WITH_PSRAM} == True || $CONFIG{PANELLAN_LCD_ENABLE_SPI_WITHOUT_PSRAM} == True) && $CONFIG{PANELLAN_LCD_PANEL_ILI9341} == True"
+
+  espressif/esp_lcd_gc9a01:
+    version: "^2"
+    rules:
+      - if: "($CONFIG{PANELLAN_LCD_ENABLE_SPI_WITH_PSRAM} == True || $CONFIG{PANELLAN_LCD_ENABLE_SPI_WITHOUT_PSRAM} == True) && $CONFIG{PANELLAN_LCD_PANEL_GC9A01} == True"
+
+  espressif/esp_lcd_st77916:
+    version: "*"
+    rules:
+      - if: "$CONFIG{PANELLAN_LCD_ENABLE_QSPI} == True && $CONFIG{PANELLAN_LCD_PANEL_ST77916} == True"
+
+  espressif/esp_lcd_st7701:
+    version: "*"
+    rules:
+      - if: "target == esp32p4 && $CONFIG{PANELLAN_LCD_ENABLE_MIPI_DSI} == True && $CONFIG{PANELLAN_LCD_PANEL_ST7701} == True"
+
+  # ---- Touch (base always; ICs gated) ----
+  espressif/esp_lcd_touch:
+    version: "^1.1.0"
+
+  espressif/esp_lcd_touch_ft5x06:
+    version: "^1.0.0"
+    rules:
+      - if: "$CONFIG{PANELLAN_TOUCH_FT5X06} == True"
+
+  espressif/esp_lcd_touch_gt911:
+    version: "^1.1.0"
+    rules:
+      - if: "$CONFIG{PANELLAN_TOUCH_GT911} == True"

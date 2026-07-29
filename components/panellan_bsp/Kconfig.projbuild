@@ -1,0 +1,120 @@
+menu "PanelLan config"
+
+menu "Hardware"
+
+choice EXAMPLE_LCD_INTERFACE
+    prompt "LCD board product"
+    help
+        Select the LCD board product. Prefer configuring with:
+          idf.py -DBOARD=<target-dir> set-target <chip> reconfigure
+        so SDKCONFIG_DEFAULTS picks components/panellan_bsp/target/<BOARD>/.
+
+        Board choice only picks the product (pins / defaults).
+        LCD bus, panel IC and touch drivers are NOT forced here — each board's
+        sdkconfig.defaults pre-enables the usual set; change them freely under
+        "PanelLan config → LCD / Touch" in menuconfig (or enable extras for experiments).
+
+    config ZX2D10GE01R
+        bool "ZX2D10GE01R: RGB565 Interface (480x480, Encoder)"
+        depends on IDF_TARGET_ESP32S3
+        help
+            RGB565 interface for high-resolution displays.
+            Resolution: 480*480
+            Input: Encoder
+            Default drivers (sdkconfig.defaults): RGB + RGB_ONLY.
+            Only available on ESP32-S3.
+
+    config ZX2D80CE02S
+        bool "ZX2D80CE02S: 8080 Interface (240x320, Touch)"
+        depends on IDF_TARGET_ESP32S3
+        help
+            I80 interface.
+            Resolution: 240*320
+            Input: Touch
+            Default drivers: I80 + ST7789 + FT5x06.
+            Only available on ESP32-S3.
+
+    config ZX3D50CE02S_USRC
+        bool "ZX3D50CE02S_USRC: I80 Interface (320x480, Touch)"
+        depends on IDF_TARGET_ESP32S3
+        help
+            I80 ST7796.
+            Resolution: 320*480
+            Input: Touch panel
+            Default drivers: I80 + ST7796 + FT5x06.
+            Only available on ESP32-S3.
+
+    config ZX3D95CE01S_TR
+        bool "ZX3D95CE01S_TR: RGB565 Interface (480x480, Touch)"
+        depends on IDF_TARGET_ESP32S3
+        help
+            RGB565 interface for high-resolution displays.
+            Resolution: 480*480
+            Input: Touch panel
+            Default drivers: RGB + RGB_ONLY + FT5x06.
+            Only available on ESP32-S3.
+
+    config ZX4D30NE01S_UR
+        bool "ZX4D30NE01S_UR: RGB565 Interface (480x272, No Touch)"
+        depends on IDF_TARGET_ESP32S3
+        help
+            RGB565 interface for high-resolution displays.
+            Resolution: 480*272
+            Default drivers: RGB + RGB_ONLY (no touch).
+            Only available on ESP32-S3.
+
+    config ZX4D30CE08S
+        bool "ZX4D30CE08S: 8080 Interface (480x272, Touch)"
+        depends on IDF_TARGET_ESP32S3
+        help
+            8080 interface for high-resolution displays.
+            Resolution: 480*272
+            Default drivers: I80 + NV3041 + CST3240.
+            Only available on ESP32-S3.
+
+    config ZX7D00CE01S
+        bool "ZX7D00CE01S: RGB565 Interface (800x480, Touch)"
+        depends on IDF_TARGET_ESP32S3
+        help
+            RGB565 interface for high-resolution displays.
+            Resolution: 800*480
+            Input: Touch panel
+            Default drivers: RGB + RGB_ONLY + GT911.
+            Only available on ESP32-S3.
+
+endchoice
+
+config PANELLAN_BOARD_USE_ENCODER
+    bool "Board has rotary encoder"
+    default y if ZX2D10GE01R
+    default n
+    help
+        Compile encoder/knob init path (hw_knob_*).
+
+choice EXAMPLE_DISPLAY_ROTATION
+    prompt "Display Rotation"
+    default EXAMPLE_DISPLAY_ROTATION_0
+    help
+        Select the rotation applied to both the LCD panel and the touch controller
+        so that LVGL coordinates match the screen orientation.
+
+config EXAMPLE_DISPLAY_ROTATION_0
+    bool "Rotate 0 degrees"
+
+config EXAMPLE_DISPLAY_ROTATION_90
+    bool "Rotate 90 degrees clockwise"
+
+config EXAMPLE_DISPLAY_ROTATION_180
+    bool "Rotate 180 degrees"
+
+config EXAMPLE_DISPLAY_ROTATION_270
+    bool "Rotate 270 degrees clockwise"
+
+endchoice
+
+endmenu
+
+rsource "lcd/Kconfig.panellan"
+rsource "touch/Kconfig.panellan"
+
+endmenu
