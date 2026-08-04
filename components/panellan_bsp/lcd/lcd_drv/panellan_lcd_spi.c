@@ -31,6 +31,10 @@ static esp_err_t panellan_lcd_init_spi_common(const panellan_lcd_config_t *cfg,
     const panellan_lcd_spi_cfg_t *spi = &cfg->u.spi;
     const panellan_lcd_panel_t *panel = &cfg->panel;
     const spi_host_device_t host = spi->host ? spi->host : SPI2_HOST;
+    bool run_post_init = false;
+#if CONFIG_PANELLAN_LCD_PANEL_ST7789
+    st7789_vendor_config_t st7789_vendor = {0};
+#endif
 
     panellan_lcd_bl_gpio_init(panel);
 
@@ -85,14 +89,11 @@ static esp_err_t panellan_lcd_init_spi_common(const panellan_lcd_config_t *cfg,
 #endif
 #if CONFIG_PANELLAN_LCD_PANEL_ST7789
     case PANELLAN_LCD_PANEL_ST7789: {
-        static st7789_vendor_config_t vendor;
-        vendor.init_cmds = (const st7789_lcd_init_cmd_t *)panel->vendor_init_cmds;
-        vendor.init_cmds_size = (uint16_t)panel->vendor_init_cmds_count;
+        st7789_vendor.init_cmds = (const st7789_lcd_init_cmd_t *)panel->vendor_init_cmds;
+        st7789_vendor.init_cmds_size = (uint16_t)panel->vendor_init_cmds_count;
+        run_post_init = st7789_vendor.init_cmds && st7789_vendor.init_cmds_size;
         ESP_RETURN_ON_ERROR(esp_lcd_new_panel_st7789(g_panellan_lcd_rt.io, &panel_config, &g_panellan_lcd_rt.panel),
                             TAG, "st7789");
-        if (vendor.init_cmds && vendor.init_cmds_size) {
-            ESP_RETURN_ON_ERROR(panel_st7789_init(g_panellan_lcd_rt.io, &vendor), TAG, "st7789 vendor");
-        }
         break;
     }
 #endif
@@ -102,6 +103,11 @@ static esp_err_t panellan_lcd_init_spi_common(const panellan_lcd_config_t *cfg,
 
     ESP_RETURN_ON_ERROR(esp_lcd_panel_reset(g_panellan_lcd_rt.panel), TAG, "reset");
     ESP_RETURN_ON_ERROR(esp_lcd_panel_init(g_panellan_lcd_rt.panel), TAG, "init");
+#if CONFIG_PANELLAN_LCD_PANEL_ST7789
+    if (run_post_init) {
+        ESP_RETURN_ON_ERROR(panel_st7789_init(g_panellan_lcd_rt.io, &st7789_vendor), TAG, "st7789 vendor");
+    }
+#endif
     ESP_RETURN_ON_ERROR(panellan_lcd_apply_orientation(g_panellan_lcd_rt.panel, panel, rotation), TAG, "orient");
     return panellan_lcd_panel_disp_on_and_bl(panel);
 }
@@ -132,9 +138,7 @@ esp_err_t panellan_lcd_init_spi_with_psram(const panellan_lcd_config_t *cfg,
 esp_err_t panellan_lcd_deinit_spi_with_psram(void) {
     return panellan_lcd_deinit_spi_common();
 }
-#endif
-
-#if CONFIG_PANELLAN_LCD_ENABLE_SPI_WITHOUT_PSRAM
+#elif CONFIG_PANELLAN_LCD_ENABLE_SPI_WITHOUT_PSRAM
 esp_err_t panellan_lcd_init_spi_without_psram(const panellan_lcd_config_t *cfg,
                                           panellan_display_rotation_t rotation) {
     return panellan_lcd_init_spi_common(cfg, rotation);

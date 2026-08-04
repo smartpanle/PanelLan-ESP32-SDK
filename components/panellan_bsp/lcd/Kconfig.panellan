@@ -16,6 +16,7 @@ config PANELLAN_LCD_H_RES
     default 800 if ZX7D00CE01S
     default 480 if ZX2D10GE01R
     default 240 if ZX2D80CE02S
+    default 240 if ZX2D80CE63S
     default 480
     help
         Native panel width. Board sdkconfig.defaults set this; keep in sync with touch x_max.
@@ -30,6 +31,7 @@ config PANELLAN_LCD_V_RES
     default 480 if ZX7D00CE01S
     default 480 if ZX2D10GE01R
     default 320 if ZX2D80CE02S
+    default 320 if ZX2D80CE63S
     default 480
     help
         Native panel height. Keep in sync with board panel timing / touch y_max.
@@ -76,49 +78,42 @@ config PANELLAN_LCD_PANEL_RGB_ONLY
 config PANELLAN_LCD_PANEL_ST7789
     bool "ST7789"
     default n
-    depends on PANELLAN_LCD_ENABLE_I80
     help
         Uses IDF built-in esp_lcd_panel_st7789 (no extra Registry package).
 
 config PANELLAN_LCD_PANEL_ST7796
     bool "ST7796"
     default n
-    depends on PANELLAN_LCD_ENABLE_I80
     help
         Auto-adds espressif/esp_lcd_st7796 via Component Manager.
 
 config PANELLAN_LCD_PANEL_NV3041
     bool "NV3041"
     default n
-    depends on PANELLAN_LCD_ENABLE_I80
     help
         Auto-adds eric-c-e/esp_lcd_nv3041.
 
 config PANELLAN_LCD_PANEL_ILI9341
     bool "ILI9341"
     default n
-    depends on PANELLAN_LCD_ENABLE_SPI_WITH_PSRAM || PANELLAN_LCD_ENABLE_SPI_WITHOUT_PSRAM
     help
         Auto-adds espressif/esp_lcd_ili9341.
 
 config PANELLAN_LCD_PANEL_GC9A01
     bool "GC9A01"
     default n
-    depends on PANELLAN_LCD_ENABLE_SPI_WITH_PSRAM || PANELLAN_LCD_ENABLE_SPI_WITHOUT_PSRAM
     help
         Auto-adds espressif/esp_lcd_gc9a01.
 
 config PANELLAN_LCD_PANEL_ST77916
     bool "ST77916 (QSPI)"
     default n
-    depends on PANELLAN_LCD_ENABLE_QSPI
     help
         Auto-adds espressif/esp_lcd_st77916.
 
 config PANELLAN_LCD_PANEL_ST7701
     bool "ST7701 (MIPI)"
     default n
-    depends on PANELLAN_LCD_ENABLE_MIPI_DSI
     help
         Auto-adds espressif/esp_lcd_st7701 (ESP32-P4).
 
