@@ -34,6 +34,16 @@ choice EXAMPLE_LCD_INTERFACE
             Default drivers: I80 + ST7789 + FT5x06.
             Only available on ESP32-S3.
 
+    config ZX2D80CE63S
+        bool "ZX2D80CE63S: SPI Interface (240x320, Touch)"
+        depends on IDF_TARGET_ESP32C61
+        help
+            I80 interface.
+            Resolution: 240*320
+            Input: Touch
+            Default drivers: SPI + ST7789 + FT5x06.
+            Only available on ESP32-C61.
+
     config ZX3D50CE02S_USRC
         bool "ZX3D50CE02S_USRC: I80 Interface (320x480, Touch)"
         depends on IDF_TARGET_ESP32S3

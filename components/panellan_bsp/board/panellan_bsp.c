@@ -11,6 +11,7 @@
     !CONFIG_ZX7D00CE01S         && \
     !CONFIG_ZX2D10GE01R         && \
     !CONFIG_ZX4D30CE08S         && \
-    !CONFIG_ZX2D80CE02S
+    !CONFIG_ZX2D80CE02S         && \
+    !CONFIG_ZX2D80CE63S
 #error "No LCD interface selected! Please select one in menuconfig."
 #endif
