@@ -30,12 +30,20 @@ esp_err_t panellan_lcd_apply_orientation(esp_lcd_panel_handle_t panel,
     return ESP_OK;
 }
 
-/* Turn on panel display output; enable backlight if configured */
-esp_err_t panellan_lcd_panel_disp_on_and_bl(const panellan_lcd_panel_t *pcfg) {
-    if (!g_panellan_lcd_rt.panel || !pcfg) {
+/* Panel display output on (DISPON); does not touch backlight */
+esp_err_t panellan_lcd_panel_disp_on(const panellan_lcd_panel_t *pcfg) {
+    (void)pcfg;
+    if (!g_panellan_lcd_rt.panel) {
         return ESP_ERR_INVALID_STATE;
     }
-    esp_lcd_panel_disp_on_off(g_panellan_lcd_rt.panel, true);
+    return esp_lcd_panel_disp_on_off(g_panellan_lcd_rt.panel, true);
+}
+
+/* Enable backlight if board allows turn_on_bl_after_init */
+esp_err_t panellan_lcd_panel_bl_on(const panellan_lcd_panel_t *pcfg) {
+    if (!pcfg) {
+        return ESP_ERR_INVALID_ARG;
+    }
     if (pcfg->turn_on_bl_after_init && pcfg->bl_gpio != GPIO_NUM_NC) {
         gpio_set_level(pcfg->bl_gpio, pcfg->bl_on_level);
     }

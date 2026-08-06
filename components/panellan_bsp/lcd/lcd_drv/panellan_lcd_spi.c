@@ -109,7 +109,9 @@ static esp_err_t panellan_lcd_init_spi_common(const panellan_lcd_config_t *cfg,
     }
 #endif
     ESP_RETURN_ON_ERROR(panellan_lcd_apply_orientation(g_panellan_lcd_rt.panel, panel, rotation), TAG, "orient");
-    return panellan_lcd_panel_disp_on_and_bl(panel);
+    ESP_RETURN_ON_ERROR(panellan_lcd_panel_disp_on(panel), TAG, "disp_on");
+    ESP_RETURN_ON_ERROR(panellan_lcd_panel_bl_on(panel), TAG, "bl_on");
+    return ESP_OK;
 }
 
 static esp_err_t panellan_lcd_deinit_spi_common(void) {

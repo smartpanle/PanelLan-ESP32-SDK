@@ -30,6 +30,11 @@ void hw_lcd_set_bl(bool on) {
     panellan_lcd_set_bl(on);
 }
 
+esp_err_t hw_lcd_disp_on(bool on) {
+    return panellan_lcd_disp_on(on);
+}
+
+
 int hw_lcd_get_te_gpio(void) {
     return panellan_lcd_get_te_gpio();
 }
