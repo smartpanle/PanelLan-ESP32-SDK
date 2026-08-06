@@ -18,7 +18,6 @@
 #include "esp_lcd_panel_ops.h"
 #include "esp_lcd_types.h"
 #include "hal/lcd_types.h"
-#include "hal/mipi_dsi_types.h"
 #include "sdkconfig.h"
 
 #ifdef __cplusplus
@@ -226,7 +225,7 @@ typedef struct {
     uint8_t pwr_on_level;               /*!< Power-on level */
     uint8_t lane_num;                   /*!< MIPI lane count */
     uint32_t lane_bit_rate_mbps;        /*!< Lane bit rate (Mbps) */
-    mipi_dsi_phy_clock_source_t phy_clk_src; /*!< PHY PLL ref clk; 0 = IDF auto by chip rev */
+    int phy_clk_src; /*!< PHY PLL ref clk; 0 = IDF auto by chip rev */
     uint32_t dpi_clock_freq_mhz;        /*!< DPI clock (MHz) */
     uint16_t hsync_back_porch;          /*!< Horizontal back porch */
     uint16_t hsync_pulse_width;         /*!< HSYNC pulse width */

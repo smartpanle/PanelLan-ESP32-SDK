@@ -16,6 +16,8 @@ config PANELLAN_LCD_H_RES
     default 800 if ZX7D00CE01S
     default 480 if ZX2D10GE01R
     default 240 if ZX2D80CE02S
+    default 240 if ZX2D80CE63S
+    default 240 if ZX2D80CECOF
     default 480
     help
         Native panel width. Board sdkconfig.defaults set this; keep in sync with touch x_max.
@@ -30,6 +32,8 @@ config PANELLAN_LCD_V_RES
     default 480 if ZX7D00CE01S
     default 480 if ZX2D10GE01R
     default 320 if ZX2D80CE02S
+    default 320 if ZX2D80CE63S
+    default 320 if ZX2D80CECOF
     default 480
     help
         Native panel height. Keep in sync with board panel timing / touch y_max.
