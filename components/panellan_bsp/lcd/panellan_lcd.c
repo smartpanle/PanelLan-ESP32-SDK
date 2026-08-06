@@ -44,6 +44,13 @@ void panellan_lcd_set_bl(bool on) {
                       : !g_panellan_lcd_rt.cfg.panel.bl_on_level);
 }
 
+esp_err_t panellan_lcd_disp_on(bool on) {
+    if (!g_panellan_lcd_rt.active || !g_panellan_lcd_rt.panel) {
+        return ESP_ERR_INVALID_STATE;
+    }
+    return esp_lcd_panel_disp_on_off(g_panellan_lcd_rt.panel, on);
+}
+
 /* Init LCD */
 esp_err_t panellan_lcd_init(const panellan_lcd_config_t *cfg,
                         int tear_avoid_mode,

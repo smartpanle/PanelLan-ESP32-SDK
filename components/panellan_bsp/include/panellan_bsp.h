@@ -92,6 +92,9 @@ uint8_t hw_lcd_get_bits_per_pixel(void);
 
 void hw_lcd_set_bl(bool on);
 
+/** Panel DISPON/DISPOFF；建议在首帧 LVGL 刷新后再开，避免白闪 */
+esp_err_t hw_lcd_disp_on(bool on);
+
 #if CONFIG_PANELLAN_LCD_ENABLE_I80
 void *hw_lcd_i80_alloc_draw_buffer(size_t size, uint32_t caps);
 esp_err_t hw_lcd_i80_setup_adapter_flush(void *disp, esp_lcd_panel_io_handle_t io);

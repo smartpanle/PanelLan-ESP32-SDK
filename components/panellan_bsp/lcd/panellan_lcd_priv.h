@@ -68,10 +68,15 @@ esp_err_t panellan_lcd_apply_orientation(esp_lcd_panel_handle_t panel,
                                      panellan_display_rotation_t rotation);
 
 /**
- * @brief Turn display on (disp_on) and enable backlight
- * @note  LVGL path often re-enables backlight from upper layer after adapter is ready
+ * @brief Turn panel display output on (DISPON only; no backlight)
  */
-esp_err_t panellan_lcd_panel_disp_on_and_bl(const panellan_lcd_panel_t *pcfg);
+esp_err_t panellan_lcd_panel_disp_on(const panellan_lcd_panel_t *pcfg);
+
+/**
+ * @brief Enable backlight when turn_on_bl_after_init && bl_gpio valid
+ * @note  LVGL path often uses panellan_lcd_set_bl() after adapter is ready instead
+ */
+esp_err_t panellan_lcd_panel_bl_on(const panellan_lcd_panel_t *pcfg);
 
 /* ---- Bus driver entry points (lcd_drv/; dispatched by panellan_lcd_init) ---- */
 

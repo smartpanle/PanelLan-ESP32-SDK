@@ -54,10 +54,12 @@ esp_err_t panellan_lcd_init_mipi_dsi(const panellan_lcd_config_t *cfg,
 
     panellan_lcd_bl_gpio_init(panel);
 
+    /* phy_clk_src=0 → esp_lcd_new_dsi_bus picks rev-correct default.
+     * Do not substitute MIPI_DSI_PHY_CLK_SRC_DEFAULT (legacy PLL_F20M). */
     esp_lcd_dsi_bus_config_t bus_config = {
         .bus_id = 0,
         .num_data_lanes = mipi->lane_num ? mipi->lane_num : 2,
-        .phy_clk_src = MIPI_DSI_PHY_CLK_SRC_DEFAULT,
+        .phy_clk_src = mipi->phy_clk_src,
         .lane_bit_rate_mbps = mipi->lane_bit_rate_mbps ? mipi->lane_bit_rate_mbps : 1000,
     };
     ESP_RETURN_ON_ERROR(esp_lcd_new_dsi_bus(&bus_config, &g_panellan_lcd_rt.dsi_bus), TAG, "dsi bus");
@@ -124,7 +126,9 @@ esp_err_t panellan_lcd_init_mipi_dsi(const panellan_lcd_config_t *cfg,
                         TAG, "st7701");
     ESP_RETURN_ON_ERROR(esp_lcd_panel_reset(g_panellan_lcd_rt.panel), TAG, "reset");
     ESP_RETURN_ON_ERROR(esp_lcd_panel_init(g_panellan_lcd_rt.panel), TAG, "init");
-    return panellan_lcd_panel_disp_on_and_bl(panel);
+    ESP_RETURN_ON_ERROR(panellan_lcd_panel_disp_on(panel), TAG, "disp_on");
+    ESP_RETURN_ON_ERROR(panellan_lcd_panel_bl_on(panel), TAG, "bl_on");
+    return ESP_OK;
 #else
     (void)tear;
     return ESP_ERR_NOT_SUPPORTED;

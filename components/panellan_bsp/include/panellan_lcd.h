@@ -18,6 +18,7 @@
 #include "esp_lcd_panel_ops.h"
 #include "esp_lcd_types.h"
 #include "hal/lcd_types.h"
+#include "hal/mipi_dsi_types.h"
 #include "sdkconfig.h"
 
 #ifdef __cplusplus
@@ -212,6 +213,10 @@ typedef struct {
 
 /**
  * @brief MIPI DSI bus and DPI timing
+ *
+ * phy_clk_src: P4 rev 差异大。填 0 让 esp_lcd_new_dsi_bus 按芯片版本选
+ * （<3.0 → PLL_F20M，≥3.0 → XTAL）。勿写 MIPI_DSI_PHY_CLK_SRC_DEFAULT，
+ * 它实际是 LEGACY(PLL_F20M)，在 rev≥3.0 上会 abort。
  */
 typedef struct {
     int ldo_chan_id;                    /*!< PHY LDO channel */
@@ -221,6 +226,7 @@ typedef struct {
     uint8_t pwr_on_level;               /*!< Power-on level */
     uint8_t lane_num;                   /*!< MIPI lane count */
     uint32_t lane_bit_rate_mbps;        /*!< Lane bit rate (Mbps) */
+    mipi_dsi_phy_clock_source_t phy_clk_src; /*!< PHY PLL ref clk; 0 = IDF auto by chip rev */
     uint32_t dpi_clock_freq_mhz;        /*!< DPI clock (MHz) */
     uint16_t hsync_back_porch;          /*!< Horizontal back porch */
     uint16_t hsync_pulse_width;         /*!< HSYNC pulse width */
@@ -262,6 +268,9 @@ esp_err_t panellan_lcd_deinit(void);
 
 /* Toggle backlight (uses panel.bl_gpio / bl_on_level) */
 void panellan_lcd_set_bl(bool on);
+
+/* Panel DISPON/DISPOFF; call after first LVGL frame to avoid white flash */
+esp_err_t panellan_lcd_disp_on(bool on);
 
 /* TE GPIO number, or GPIO_NUM_NC if unset */
 int panellan_lcd_get_te_gpio(void);
