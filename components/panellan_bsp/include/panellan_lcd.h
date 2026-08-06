@@ -25,8 +25,8 @@ extern "C" {
 #endif
 
 /**
- * @brief Display rotation (independent of esp_lvgl_adapter).
- * Numeric values match esp_lv_adapter_rotation_t when LVGL is enabled.
+ * @brief Display rotation in quarter turns.
+ * Convert explicitly before passing to esp_lvgl_adapter, which expects degrees.
  */
 typedef enum {
     PANELLAN_DISPLAY_ROTATE_0 = 0,

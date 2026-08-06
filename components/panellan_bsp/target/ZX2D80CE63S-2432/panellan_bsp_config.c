@@ -3,6 +3,8 @@
  * Board L3: ZX2D80 — SPI ST7789 + FT5x06.
  */
 
+#include <stdbool.h>
+
 #include "panellan_bsp.h"
 #include "panellan_bsp_pin.h"
 #include "st7789_vendor.h"
@@ -56,7 +58,7 @@ static const panellan_bsp_config_t s_board_config = {
                 sizeof(vendor_specific_init_default) / sizeof(vendor_specific_init_default[0]),
             .color_order = LCD_RGB_ELEMENT_ORDER_RGB,
             .bits_per_pixel = 16,
-            .apply_orientation = false,
+            .apply_orientation = true,
             .base_swap_xy = false,
             .base_mirror_x = false,
             .base_mirror_y = false,

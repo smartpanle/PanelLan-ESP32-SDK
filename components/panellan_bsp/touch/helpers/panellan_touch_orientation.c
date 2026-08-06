@@ -5,6 +5,8 @@
  * (swap_xy / mirror_x / mirror_y).
  */
 
+#include <stdbool.h>
+
 #include "panellan_touch.h"
 
 void panellan_touch_get_rotation_flags(panellan_touch_rotation_type_t type,
@@ -70,8 +72,8 @@ void panellan_touch_get_rotation_flags(panellan_touch_rotation_type_t type,
         switch (rotation) {
         case PANELLAN_DISPLAY_ROTATE_90:
             swap = true;
-            x_mirror = false;
-            y_mirror = true;
+            x_mirror = true;
+            y_mirror = false;
             break;
         case PANELLAN_DISPLAY_ROTATE_180:
             swap = false;
@@ -80,8 +82,8 @@ void panellan_touch_get_rotation_flags(panellan_touch_rotation_type_t type,
             break;
         case PANELLAN_DISPLAY_ROTATE_270:
             swap = true;
-            x_mirror = true;
-            y_mirror = false;
+            x_mirror = false;
+            y_mirror = true;
             break;
         case PANELLAN_DISPLAY_ROTATE_0:
         default:

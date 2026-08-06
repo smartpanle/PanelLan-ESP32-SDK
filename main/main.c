@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: CC0-1.0
  */
 
+#include <stdbool.h>
 #include <string.h>
 
 #include "freertos/FreeRTOS.h"
@@ -16,12 +17,12 @@
 #include "driver/gpio.h"
 #include "sdkconfig.h"
 
+#include "panellan_bsp.h"
+
 #include "lv_demos.h"
 #if HW_USE_ENCODER && CONFIG_ESP_LVGL_ADAPTER_ENABLE_KNOB
 #include "lv_demo_encode.h"
 #endif
-
-#include "panellan_bsp.h"
 
 static const char *TAG = "main";
 
@@ -43,6 +44,21 @@ static panellan_display_rotation_t get_configured_rotation(void) {
     return PANELLAN_DISPLAY_ROTATE_0;
 #endif
 }
+
+static esp_lv_adapter_rotation_t to_adapter_rotation(panellan_display_rotation_t rotation) {
+    switch (rotation) {
+    case PANELLAN_DISPLAY_ROTATE_0:
+        return (esp_lv_adapter_rotation_t)0;
+    case PANELLAN_DISPLAY_ROTATE_90:
+        return (esp_lv_adapter_rotation_t)90;
+    case PANELLAN_DISPLAY_ROTATE_180:
+        return (esp_lv_adapter_rotation_t)180;
+    case PANELLAN_DISPLAY_ROTATE_270:
+        return (esp_lv_adapter_rotation_t)270;
+    default:
+        return (esp_lv_adapter_rotation_t)0;
+    }
+}
 #endif
 
 #if HW_USE_LCD && CONFIG_ESP_LVGL_ADAPTER_ENABLE_FPS_STATS
@@ -62,8 +78,9 @@ static void fps_monitor_task(void *arg) {
 static void app_init_display(void) {
     esp_lcd_panel_handle_t display_panel = NULL;
     esp_lcd_panel_io_handle_t display_io_handle = NULL;
-    panellan_display_rotation_t rotation = get_configured_rotation();
-    esp_lv_adapter_rotation_t adapter_rotation = (esp_lv_adapter_rotation_t)rotation;
+    // panellan_display_rotation_t rotation = get_configured_rotation();
+    panellan_display_rotation_t rotation = PANELLAN_DISPLAY_ROTATE_180;
+    esp_lv_adapter_rotation_t adapter_rotation = to_adapter_rotation(rotation);
     esp_lv_adapter_tear_avoid_mode_t tear_avoid_mode;
     esp_lv_adapter_display_config_t display_config;
 
