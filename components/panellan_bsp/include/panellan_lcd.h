@@ -214,9 +214,9 @@ typedef struct {
 /**
  * @brief MIPI DSI bus and DPI timing
  *
- * phy_clk_src: P4 rev 差异大。填 0 让 esp_lcd_new_dsi_bus 按芯片版本选
- * （<3.0 → PLL_F20M，≥3.0 → XTAL）。勿写 MIPI_DSI_PHY_CLK_SRC_DEFAULT，
- * 它实际是 LEGACY(PLL_F20M)，在 rev≥3.0 上会 abort。
+ * phy_clk_src differs across P4 chip revs. Use 0 so esp_lcd_new_dsi_bus picks
+ * the revision-correct default (<3.0 → PLL_F20M, >=3.0 → XTAL). Do not use
+ * MIPI_DSI_PHY_CLK_SRC_DEFAULT — it is LEGACY (PLL_F20M) and aborts on rev >= 3.0.
  */
 typedef struct {
     int ldo_chan_id;                    /*!< PHY LDO channel */
