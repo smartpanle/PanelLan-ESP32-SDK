@@ -78,8 +78,7 @@ static void fps_monitor_task(void *arg) {
 static void app_init_display(void) {
     esp_lcd_panel_handle_t display_panel = NULL;
     esp_lcd_panel_io_handle_t display_io_handle = NULL;
-    // panellan_display_rotation_t rotation = get_configured_rotation();
-    panellan_display_rotation_t rotation = PANELLAN_DISPLAY_ROTATE_180;
+    panellan_display_rotation_t rotation = get_configured_rotation();
     esp_lv_adapter_rotation_t adapter_rotation = to_adapter_rotation(rotation);
     esp_lv_adapter_tear_avoid_mode_t tear_avoid_mode;
     esp_lv_adapter_display_config_t display_config;
