@@ -132,6 +132,7 @@ Board list: [§4](#4-supported-boards).
 | `ZX2D10GE01R-V-4848` | 480×480 | Encoder | RGB + SPI9 |
 | `ZX2D80CE02S-2432` | 240×320 | Touch | I80 + ST7789 |
 | `ZX2D80CE63S-2432` | 240×320 | Touch | SPI + ST7789 |
+| `ZX2D80CECOF-2432` | 240×320 | Touch | I80 + ST7789 |
 | `ZX3D50CE02S-USRC-4832` | 320×480 | Touch | I80 + ST7796 |
 | `ZX3D95CE01S-TR-4848` | 480×480 | Touch | RGB + SPI9 |
 | `ZX4D30CE08S-4827` | 480×272 | Touch | I80 + NV3041 |
