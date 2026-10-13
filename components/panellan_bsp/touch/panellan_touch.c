@@ -12,6 +12,9 @@
 #if CONFIG_PANELLAN_TOUCH_FT5X06
 #include "esp_lcd_touch_ft5x06.h"
 #endif
+#if CONFIG_PANELLAN_TOUCH_GT1151
+#include "esp_lcd_touch_gt1151.h"
+#endif
 #if CONFIG_PANELLAN_TOUCH_GT911
 #include "esp_lcd_touch_gt911.h"
 #endif
@@ -38,6 +41,7 @@ static esp_err_t panellan_touch_ensure_i2c(const panellan_touch_config_t *cfg) {
     return i2c_new_master_bus(&bus_cfg, &s_i2c_bus);
 }
 
+#if CONFIG_PANELLAN_TOUCH_FT5X06
 static esp_err_t panellan_touch_fix_int_gpio(gpio_num_t intr) {
     if (intr == GPIO_NUM_NC) {
         return ESP_OK;
@@ -53,6 +57,8 @@ static esp_err_t panellan_touch_fix_int_gpio(gpio_num_t intr) {
     return ESP_OK;
 }
 
+#endif
+
 esp_err_t panellan_touch_init(const panellan_touch_config_t *cfg,
                           panellan_display_rotation_t rotation,
                           esp_lcd_touch_handle_t *out_touch) {
@@ -63,6 +69,9 @@ esp_err_t panellan_touch_init(const panellan_touch_config_t *cfg,
     switch (cfg->ic) {
     case PANELLAN_TOUCH_IC_FT5X06:
         name = "FT5X06";
+        break;
+    case PANELLAN_TOUCH_IC_GT1151:
+        name = "GT1151";
         break;
     case PANELLAN_TOUCH_IC_GT911:
         name = "GT911";
@@ -112,6 +121,15 @@ esp_err_t panellan_touch_init(const panellan_touch_config_t *cfg,
         if (ret == ESP_OK && cfg->int_pullup) {
             ESP_RETURN_ON_ERROR(panellan_touch_fix_int_gpio(cfg->intr), TAG, "ft5x06 int");
         }
+        break;
+    }
+#endif
+#if CONFIG_PANELLAN_TOUCH_GT1151
+    case PANELLAN_TOUCH_IC_GT1151: {
+        esp_lcd_panel_io_i2c_config_t io_cfg = ESP_LCD_TOUCH_IO_I2C_GT1151_CONFIG();
+        io_cfg.scl_speed_hz = clk;
+        ESP_RETURN_ON_ERROR(esp_lcd_new_panel_io_i2c(s_i2c_bus, &io_cfg, &io), TAG, "gt1151 io");
+        ret = esp_lcd_touch_new_i2c_gt1151(io, &tp_cfg, out_touch);
         break;
     }
 #endif

@@ -5,11 +5,39 @@ menu "Touch"
 
 comment "Board defaults pre-enable the usual IC; change freely. Enabling an IC compiles hw_touch_init and pulls its package (see panellan_bsp/idf_component.yml). Leave all off for no-touch boards."
 
+choice PANELLAN_ZX3D50_TOUCH_IC
+    prompt "ZX3D50CE02S-USRC-4832 touch IC"
+    depends on ZX3D50CE02S_USRC
+    default PANELLAN_ZX3D50_TOUCH_FT5X06
+    help
+        Choose either FT5X06 or GT1151
+
+config PANELLAN_ZX3D50_TOUCH_FT5X06
+    bool "FT5x06"
+    select PANELLAN_TOUCH_FT5X06
+
+config PANELLAN_ZX3D50_TOUCH_GT1151
+    bool "GT1151"
+    select PANELLAN_TOUCH_GT1151
+
+endchoice
+
+menu "FT5x06 / GT1151 drivers"
+    visible if !ZX3D50CE02S_USRC
+
+config PANELLAN_TOUCH_GT1151
+    bool "Touch driver: GT1151"
+    default n
+    help
+        Auto-adds espressif/esp_lcd_touch_gt1151。. Run idf.py reconfigure after enabling.
+
 config PANELLAN_TOUCH_FT5X06
     bool "Touch driver: FT5x06"
     default n
     help
         Auto-adds espressif/esp_lcd_touch_ft5x06. Run idf.py reconfigure after enabling.
+
+endmenu
 
 config PANELLAN_TOUCH_GT911
     bool "Touch driver: GT911"

@@ -28,6 +28,7 @@ typedef enum {
     PANELLAN_TOUCH_IC_FT5X06,               /*!< FocalTech FT5x06 family */
     PANELLAN_TOUCH_IC_GT911,                /*!< Goodix GT911 */
     PANELLAN_TOUCH_IC_CST3240,              /*!< Hynitron CST3240 (local driver) */
+    PANELLAN_TOUCH_IC_GT1151,               /*!< GT1151 */
 } panellan_touch_ic_t;
 
 /**

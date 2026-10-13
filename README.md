@@ -157,3 +157,18 @@ idf.py menuconfig
 # if fullclean complains about lvgl hash:
 rm -rf managed_components/lvgl__lvgl && idf.py fullclean
 ```
+
+### ZX3D50CE02S-USRC-4832 touch IC selection
+
+This board supports FT5x06 (default) and GT1151. Both LCD screen versions use the selected touch IC.
+Run `idf.py menuconfig`, navigate to `PanelLan config → Touch → ZX3D50CE02S-USRC-4832 touch IC`,
+select the IC installed on your hardware, then run `idf.py reconfigure build`.
+GT1151 uses `espressif/esp_lcd_touch_gt1151` from the Espressif Component Registry, pinned to version `1.1.1`.
+For this board, the selection automatically enables the corresponding driver and disables the other
+FT5x06 / GT1151 driver. The generic FT5x06 / GT1151 driver switches are hidden for this board
+to prevent saved settings from conflicting with the touch IC selection.
+
+To select GT1151 in a configuration file, set `CONFIG_PANELLAN_ZX3D50_TOUCH_GT1151=y`
+and unset `CONFIG_PANELLAN_ZX3D50_TOUCH_FT5X06`. The existing SDA GPIO6, SCL GPIO5, INT GPIO7,
+and board reset procedure remain unchanged. GT1151 uses the official default I2C address `0x14`.
+After connecting the hardware, verify I2C communication, touch coordinates, and all display rotations.

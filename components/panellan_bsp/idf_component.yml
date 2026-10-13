@@ -60,9 +60,14 @@ dependencies:
   espressif/esp_lcd_touch_ft5x06:
     version: "^1.0.0"
     rules:
-      - if: "$CONFIG{PANELLAN_TOUCH_FT5X06} == True"
+      - if: "($CONFIG{ZX3D50CE02S_USRC} == True && $CONFIG{PANELLAN_ZX3D50_TOUCH_FT5X06} == True) || ($CONFIG{ZX3D50CE02S_USRC} == False && $CONFIG{PANELLAN_TOUCH_FT5X06} == True)"
 
   espressif/esp_lcd_touch_gt911:
     version: "^1.1.0"
     rules:
       - if: "$CONFIG{PANELLAN_TOUCH_GT911} == True"
+
+  espressif/esp_lcd_touch_gt1151:
+    version: "1.1.1"
+    rules:
+      - if: "($CONFIG{ZX3D50CE02S_USRC} == True && $CONFIG{PANELLAN_ZX3D50_TOUCH_GT1151} == True) || ($CONFIG{ZX3D50CE02S_USRC} == False && $CONFIG{PANELLAN_TOUCH_GT1151} == True)"

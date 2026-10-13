@@ -1,6 +1,6 @@
 /*
  * SPDX-License-Identifier: Apache-2.0
- * Board L3: ZX3D50CE02S-USRC — I80 ST7796 (v1/v2 detect) + FT5x06.
+ * Board L3: ZX3D50CE02S-USRC — I80 ST7796 (v1/v2 detect) + FT5x06 / GT1151.
  */
 
 #include "freertos/FreeRTOS.h"
@@ -11,6 +11,14 @@
 
 #include "panellan_bsp.h"
 #include "panellan_bsp_pin.h"
+
+#if CONFIG_PANELLAN_ZX3D50_TOUCH_GT1151
+#define ZX3D50_TOUCH_IC PANELLAN_TOUCH_IC_GT1151
+#define ZX3D50_TOUCH_INT_PULLUP false
+#else
+#define ZX3D50_TOUCH_IC PANELLAN_TOUCH_IC_FT5X06
+#define ZX3D50_TOUCH_INT_PULLUP true
+#endif
 
 static const char *TAG = "board_cfg";
 
@@ -66,7 +74,7 @@ static const panellan_lcd_init_cmd_t s_st7796_init_v2[] = {
 static const panellan_bsp_config_t s_board_config_v1 = {
     .lcd_bus = PANELLAN_LCD_BUS_I80,
     .lcd_panel_ic = PANELLAN_LCD_PANEL_ST7796,
-    .touch_ic = PANELLAN_TOUCH_IC_FT5X06,
+    .touch_ic = ZX3D50_TOUCH_IC,
     .lcd = {
         .bus = PANELLAN_LCD_BUS_I80,
         .panel = {
@@ -109,7 +117,7 @@ static const panellan_bsp_config_t s_board_config_v1 = {
         },
     },
     .touch = {
-        .ic = PANELLAN_TOUCH_IC_FT5X06,
+        .ic = ZX3D50_TOUCH_IC,
         .x_max = HW_LCD_H_RES,
         .y_max = HW_LCD_V_RES,
         .sda = TP_I2C_SDA_PIN,
@@ -119,7 +127,7 @@ static const panellan_bsp_config_t s_board_config_v1 = {
         .i2c_port = I2C_NUM_0,
         .i2c_clk_hz = 400000,
         .rotation_type = PANELLAN_TOUCH_ROTATION_STANDARD,
-        .int_pullup = true,
+        .int_pullup = ZX3D50_TOUCH_INT_PULLUP,
     },
 };
 
@@ -127,7 +135,7 @@ static const panellan_bsp_config_t s_board_config_v1 = {
 static const panellan_bsp_config_t s_board_config_v2 = {
     .lcd_bus = PANELLAN_LCD_BUS_I80,
     .lcd_panel_ic = PANELLAN_LCD_PANEL_ST7796,
-    .touch_ic = PANELLAN_TOUCH_IC_FT5X06,
+    .touch_ic = ZX3D50_TOUCH_IC,
     .lcd = {
         .bus = PANELLAN_LCD_BUS_I80,
         .panel = {
@@ -170,7 +178,7 @@ static const panellan_bsp_config_t s_board_config_v2 = {
         },
     },
     .touch = {
-        .ic = PANELLAN_TOUCH_IC_FT5X06,
+        .ic = ZX3D50_TOUCH_IC,
         .x_max = HW_LCD_H_RES,
         .y_max = HW_LCD_V_RES,
         .sda = TP_I2C_SDA_PIN,
@@ -180,7 +188,7 @@ static const panellan_bsp_config_t s_board_config_v2 = {
         .i2c_port = I2C_NUM_0,
         .i2c_clk_hz = 400000,
         .rotation_type = PANELLAN_TOUCH_ROTATION_STANDARD,
-        .int_pullup = true,
+        .int_pullup = ZX3D50_TOUCH_INT_PULLUP,
     },
 };
 
