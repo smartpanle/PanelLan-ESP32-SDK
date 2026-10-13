@@ -20,7 +20,7 @@ dependencies:
 
   # I80 flush / demos need lvgl.h on include path
   lvgl/lvgl:
-    version: ">=8,<10"
+    version: "9.5.0"
 
   # ---- LCD panel ICs (Kconfig-gated) ----
   espressif/esp_lcd_st7796:
