@@ -31,7 +31,7 @@ void panellan_lcd_bl_gpio_init(const panellan_lcd_panel_t *panel) {
     };
     ESP_ERROR_CHECK(gpio_config(&bk));
     /* Off first to avoid garbage during init; real on via disp_on_and_bl / set_bl */
-    gpio_set_level(panel->bl_gpio, 0);
+    gpio_set_level(panel->bl_gpio, !panel->bl_on_level); /* 兼容高/低电平点亮的背光。 */
 }
 
 /* Set backlight */

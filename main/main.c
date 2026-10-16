@@ -14,6 +14,7 @@
 #include "esp_err.h"
 #include "esp_heap_caps.h"
 #include "esp_lv_adapter.h"
+#include "esp_lcd_panel_io.h"
 #include "driver/gpio.h"
 #include "sdkconfig.h"
 
@@ -179,11 +180,7 @@ static void app_init_display(void) {
     }
 
 #if CONFIG_PANELLAN_LCD_ENABLE_I80
-    /* I80: PSRAM draw buffer + SRAM bounce flush — before adapter_start */
-    if (hw_lcd_i80_bind_lvgl_draw_buffer(disp) != ESP_OK) {
-        ESP_LOGE(TAG, "I80 PSRAM draw buffer bind failed");
-        return;
-    }
+    ESP_LOGI(TAG, "I80: reuse adapter PSRAM draw buffers; keep SRAM bounce flush");
     if (hw_lcd_i80_setup_adapter_flush(disp, display_io_handle) != ESP_OK) {
         ESP_LOGE(TAG, "I80 bounce flush setup failed");
         return;
@@ -217,8 +214,6 @@ static void app_init_display(void) {
     xTaskCreate(fps_monitor_task, "fps_monitor", FPS_MONITOR_TASK_STACK_SIZE, disp, FPS_MONITOR_TASK_PRIORITY, NULL);
 #endif
 
-    hw_lcd_set_bl(true); /* re-enable backlight after LVGL takes over */
-
     /* Encoder demo UI (see lv_demo_encode.c) */
     if (esp_lv_adapter_lock(-1) == ESP_OK) {
 #if HW_USE_ENCODER && CONFIG_ESP_LVGL_ADAPTER_ENABLE_KNOB
@@ -228,6 +223,8 @@ static void app_init_display(void) {
         // lv_demo_benchmark();
 #endif
         esp_lv_adapter_unlock();
+        vTaskDelay(pdMS_TO_TICKS(10));
+        hw_lcd_set_bl(true);
     }
 }
 

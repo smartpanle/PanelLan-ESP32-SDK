@@ -6,6 +6,9 @@
 
 #if CONFIG_PANELLAN_LCD_ENABLE_I80
 
+#include <stdlib.h>
+#include <string.h>
+#include "esp_heap_caps.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
@@ -28,6 +31,36 @@
 #include "panellan_lcd_priv.h"
 
 static const char *TAG = "panellan_lcd_i80";
+
+/**
+ * @brief 在背光开启前将 I80 屏幕的 RGB565 显存清为黑色（0x000000）。
+ *
+ * @param cfg 屏幕配置，使用未旋转的物理分辨率。
+ * @return ESP_OK 表示清屏完成，否则返回分配或传输错误。
+ */
+static esp_err_t panellan_lcd_i80_clear_black(const panellan_lcd_config_t *cfg)
+{
+    const int strip_rows = 16; /* 分块传输，避免分配整帧缓冲区。 */
+    const size_t strip_bytes = (size_t)cfg->panel.h_res * strip_rows * sizeof(uint16_t);
+    void *black_buffer = esp_lcd_i80_alloc_draw_buffer(g_panellan_lcd_rt.io, strip_bytes,
+                                                     MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
+    ESP_RETURN_ON_FALSE(black_buffer, ESP_ERR_NO_MEM, TAG, "black buffer");
+    memset(black_buffer, 0, strip_bytes); /* RGB565 的 0x0000 对应 RGB888 的 0x000000。 */
+
+    esp_err_t ret = esp_lcd_panel_swap_xy(g_panellan_lcd_rt.panel, false);
+    for (int y = 0; ret == ESP_OK && y < cfg->panel.v_res; y += strip_rows) {
+        const int end_y = (y + strip_rows < cfg->panel.v_res) ? y + strip_rows : cfg->panel.v_res;
+        ret = esp_lcd_panel_draw_bitmap(g_panellan_lcd_rt.panel, 0, y, cfg->panel.h_res, end_y, black_buffer);
+    }
+
+    /* I80 参数发送会等待所有颜色 DMA 完成；发送 NOP 后才能释放缓冲区和亮背光。 */
+    esp_err_t wait_ret = esp_lcd_panel_io_tx_param(g_panellan_lcd_rt.io, 0x00, NULL, 0);
+    free(black_buffer);
+    ESP_RETURN_ON_ERROR(ret, TAG, "clear black");
+    ESP_RETURN_ON_ERROR(wait_ret, TAG, "wait black frame");
+    ESP_LOGI(TAG, "Black frame ready before backlight on");
+    return ESP_OK;
+}
 
 esp_err_t panellan_lcd_init_i80(const panellan_lcd_config_t *cfg,
                             panellan_display_rotation_t rotation) {
@@ -140,6 +173,7 @@ esp_err_t panellan_lcd_init_i80(const panellan_lcd_config_t *cfg,
         ESP_RETURN_ON_ERROR(esp_lcd_panel_reset(g_panellan_lcd_rt.panel), TAG, "panel reset");
     }
     ESP_RETURN_ON_ERROR(esp_lcd_panel_init(g_panellan_lcd_rt.panel), TAG, "panel init");
+    ESP_RETURN_ON_ERROR(panellan_lcd_i80_clear_black(cfg), TAG, "startup black frame");
     ESP_RETURN_ON_ERROR(panellan_lcd_apply_orientation(g_panellan_lcd_rt.panel, panel, rotation), TAG, "orient");
     ESP_RETURN_ON_ERROR(panellan_lcd_panel_disp_on(panel), TAG, "disp_on");
     ESP_RETURN_ON_ERROR(panellan_lcd_panel_bl_on(panel), TAG, "bl_on");

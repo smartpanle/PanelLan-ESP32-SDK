@@ -168,13 +168,13 @@ rm -rf managed_components/lvgl__lvgl && idf.py fullclean
 ### ZX3D50CE02S-USRC-4832 触摸芯片选择
 
 此型号支持 FT5x06（默认）和 GT1151，两种 LCD 屏幕版本均使用所选触摸芯片。
-运行 `idf.py menuconfig`，进入 `PanelLan config → Touch → ZX3D50CE02S-USRC-4832 touch IC`，
+运行 `idf.py menuconfig`，进入 `PanelLan config → Touch → FT5x06 / GT1151 touch IC`，
 按实际硬件选择芯片，再执行 `idf.py reconfigure build`。
 GT1151 使用乐鑫组件库 `espressif/esp_lcd_touch_gt1151`，固定版本为 `1.1.1`。
 此型号的选择项自动启用对应驱动，并关闭未选中的 FT5x06 / GT1151 驱动。
-通用 FT5x06 / GT1151 驱动开关在此型号下隐藏，避免旧配置与芯片选择不一致。
+该通用选择适用于所有 MCU；选择 None 可关闭这两种驱动，使用 GT911、CST3240 或无触摸配置。
 
-通过配置文件选择 GT1151 时，设置 `CONFIG_PANELLAN_ZX3D50_TOUCH_GT1151=y`，
-并取消 `CONFIG_PANELLAN_ZX3D50_TOUCH_FT5X06`。原有 SDA GPIO6、SCL GPIO5、INT GPIO7
+通过配置文件选择 GT1151 时，设置 `CONFIG_PANELLAN_TOUCH_GT1151=y`，
+并取消 `CONFIG_PANELLAN_TOUCH_FT5X06`。原有 SDA GPIO6、SCL GPIO5、INT GPIO7
 以及板级复位方式保持不变；GT1151 使用官方默认 I2C 地址 `0x14`。
 接入硬件后需确认 I2C 通信、触摸坐标和各旋转方向。

@@ -12,12 +12,16 @@
 #include "panellan_bsp.h"
 #include "panellan_bsp_pin.h"
 
-#if CONFIG_PANELLAN_ZX3D50_TOUCH_GT1151
+/* 板级触摸配置直接跟随通用驱动选择，不依赖 MCU 型号。 */
+#if CONFIG_PANELLAN_TOUCH_GT1151
 #define ZX3D50_TOUCH_IC PANELLAN_TOUCH_IC_GT1151
 #define ZX3D50_TOUCH_INT_PULLUP false
-#else
+#elif CONFIG_PANELLAN_TOUCH_FT5X06
 #define ZX3D50_TOUCH_IC PANELLAN_TOUCH_IC_FT5X06
 #define ZX3D50_TOUCH_INT_PULLUP true
+#else
+#define ZX3D50_TOUCH_IC PANELLAN_TOUCH_IC_NONE
+#define ZX3D50_TOUCH_INT_PULLUP false
 #endif
 
 static const char *TAG = "board_cfg";
@@ -82,7 +86,7 @@ static const panellan_bsp_config_t s_board_config_v1 = {
             .v_res = HW_LCD_V_RES,
             .bl_gpio = LCD_BL_PIN,
             .bl_on_level = 1,
-            .turn_on_bl_after_init = true,
+            .turn_on_bl_after_init = false, /* 背光由应用在 UI 首帧刷新后开启。 */
             .te_gpio = LCD_TE_PIN,
             .panel_ic = PANELLAN_LCD_PANEL_ST7796,
             .vendor_init_cmds = s_st7796_init_v1,
@@ -143,7 +147,7 @@ static const panellan_bsp_config_t s_board_config_v2 = {
             .v_res = HW_LCD_V_RES,
             .bl_gpio = LCD_BL_PIN,
             .bl_on_level = 1,
-            .turn_on_bl_after_init = true,
+            .turn_on_bl_after_init = false, /* 背光由应用在 UI 首帧刷新后开启。 */
             .te_gpio = LCD_TE_PIN,
             .panel_ic = PANELLAN_LCD_PANEL_ST7796,
             .vendor_init_cmds = s_st7796_init_v2,
